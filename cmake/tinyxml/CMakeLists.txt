@@ -10,6 +10,9 @@ endif(NOT DEFINED IS_ROOT)
 set(${PROJECT_NAME}_UnixInclude "${ROOT_DIR}/3rdparty/tinyxml/" PARENT_SCOPE)
 set(CMAKE_CURRENT_SOURCE_DIR "${ROOT_DIR}/3rdparty/tinyxml/")
 
+#Compile TinyXML with STL support
+add_definitions(-DTIXML_USE_STL)
+
 moai_manual(library
     ${CMAKE_CURRENT_SOURCE_DIR}/tinystr.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tinyxml.cpp
