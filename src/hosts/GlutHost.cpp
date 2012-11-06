@@ -38,12 +38,10 @@
 #ifdef _WIN32
 	#include <glut.h>
 	#include <FolderWatcher-win.h>
-#else
-	#ifdef __MOAI_LINUX_BUILD
-		#include GLUT_LIBRARY_PATH
-	#else
-		#include <GLUT/glut.h>
-	#endif
+#endif
+
+#ifdef __linux__
+  #include <GL/glut.h>
 #endif
 
 #ifdef __APPLE__
