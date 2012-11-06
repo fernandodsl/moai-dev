@@ -8,7 +8,7 @@ if(NOT DEFINED IS_ROOT)
 endif(NOT DEFINED IS_ROOT)
 
 set(${PROJECT_NAME}_UnixInclude "${ROOT_DIR}/3rdparty/curl-7.19.7/include/" PARENT_SCOPE)
-add_definitions(${CRYPTO_DEFINITIONS} -D__MOAI_LINUX_BUILD)
+add_definitions(${CRYPTO_DEFINITIONS})
 include_directories("${ROOT_DIR}/cmake/libcurl/")
 include_directories("${ROOT_DIR}/3rdparty/curl-7.19.7/include/")
 set(CMAKE_CURRENT_SOURCE_DIR "${ROOT_DIR}/3rdparty/curl-7.19.7/lib/")

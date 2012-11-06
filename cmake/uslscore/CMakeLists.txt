@@ -8,7 +8,6 @@ if(NOT DEFINED IS_ROOT)
 endif(NOT DEFINED IS_ROOT)
 
 set(${PROJECT_NAME}_UnixInclude "${ROOT_DIR}/src/uslscore/" PARENT_SCOPE)
-add_definitions(-D__MOAI_LINUX_BUILD)
 include_directories("${ROOT_DIR}/src/")
 include_directories("${ROOT_DIR}/3rdparty/")
 set(CMAKE_CURRENT_SOURCE_DIR "${ROOT_DIR}/src/uslscore/")

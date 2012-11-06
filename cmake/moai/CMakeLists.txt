@@ -8,7 +8,7 @@ if(NOT DEFINED IS_ROOT)
 endif(NOT DEFINED IS_ROOT)
 
 set(CMAKE_CURRENT_SOURCE_DIR "${ROOT_DIR}/src/hosts/")
-add_definitions(-D__MOAI_LINUX_BUILD -DGLUT_LIBRARY_PATH="${GLUT_INCLUDE_DIR}/GL/glut.h")
+add_definitions(-DGLUT_LIBRARY_PATH="${GLUT_INCLUDE_DIR}/GL/glut.h")
 include_directories("${ROOT_DIR}/src/")
 include_directories("${ROOT_DIR}/src/hosts/")
 include_directories(${GLUT_INCLUDE_DIR})
