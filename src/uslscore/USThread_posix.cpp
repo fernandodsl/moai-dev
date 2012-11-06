@@ -67,7 +67,7 @@ void USThreadImpl::Sleep () {
 
 #if defined( __APPLE__ )
 	pthread_yield_np ();
-#elif defined( __linux )
+#elif defined( __linux__ )
 	#if defined( ANDROID ) | defined( NACL )
 		sched_yield ();
 	#else
