@@ -24,7 +24,7 @@
 #elif defined( _WIN32 )
 	#define MOAI_OS_WINDOWS
 
-#elif defined( __linux )
+#elif defined( __linux__ )
 
 	#ifdef ANDROID
 		#define MOAI_PHONE
