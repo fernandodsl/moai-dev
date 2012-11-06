@@ -20,7 +20,7 @@
 */
 
 #include "pch.h"
-#ifdef __linux
+#ifdef __linux__
 
 #include <uslscore/USDeviceTime.h>
 #include <time.h>
@@ -46,7 +46,7 @@ static long _getTimerInfo () {
 	
 	double USDeviceTime::GetTimeInSeconds () {
 			
-		#if defined ANDROID || defined __MOAI_LINUX_BUILD
+		#if defined MOAI_OS_LINUX 
 			
 			struct timespec timer;
 			timer.tv_nsec = 0;
