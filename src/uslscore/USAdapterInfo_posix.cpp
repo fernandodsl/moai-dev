@@ -29,11 +29,16 @@
 
 #include <uslscore/USAdapterInfo.h>
 
-#if !( NACL || ANDROID || __MOAI_LINUX_BUILD )
+#ifndef NACL 
 #include <sys/socket.h>
 #include <sys/sysctl.h>
 #include <net/if.h>
+#include <ifaddrs.h>
+#if defined MOAI_OS_OSX || defined MOAI_OS_IPHONE 
 #include <net/if_dl.h>
+#elif defined MOAI_OS_LINUX || defined MOAI_OS_ANDROID 
+#include <netpacket/packet.h>
+#endif
 #endif
 
 //================================================================//
@@ -49,50 +54,48 @@ void USAdapterInfo::SetNameFromMACAddress ( u8* address, u32 length ) {
 }
 
 STLString USAdapterInfo::GetMACAddress () {
-	
-	char * msgBuffer = NULL;
-	USMacAddress macAddress;
-	memset ( macAddress.bytes , 0 , 6 );
-    
-#if !( NACL || ANDROID || __MOAI_LINUX_BUILD )
-	int mgmtInfoBase[6];
-	mgmtInfoBase[0] = CTL_NET;
-	mgmtInfoBase[1] = AF_ROUTE;
-	mgmtInfoBase[2] = 0;              
-	mgmtInfoBase[3] = AF_LINK;
-	mgmtInfoBase[4] = NET_RT_IFLIST;
-    
-	if ( !(( mgmtInfoBase [ 5 ] = if_nametoindex ( "en0" )) == 0 ) ) {
-		
-		size_t length;
-		if ( !( sysctl ( mgmtInfoBase, 6, NULL, &length, NULL, 0 ) < 0 ) ) {
-			
-	    	if ( !(( msgBuffer = ( char * ) malloc ( length )) == NULL ) ) {
-		
-	    		if ( sysctl ( mgmtInfoBase, 6, msgBuffer, &length, NULL, 0 ) < 0 ) {
-					//error
-				}
-				
-				struct if_msghdr *interfaceMsgStruct = ( struct if_msghdr * ) msgBuffer;
 
-				struct sockaddr_dl *socketStruct = ( struct sockaddr_dl * ) ( interfaceMsgStruct + 1 );
+  USMacAddress macAddress;
+  memset ( macAddress.bytes , 0 , 6 );
 
-				memcpy ( macAddress.bytes, socketStruct->sdl_data + socketStruct->sdl_nlen, 6 );
-				
-				free(msgBuffer);
-			}
-		}
-	}
-#else
-	//ANDROID NOT IMPLEMENTED
+#ifndef NACL
+  struct ifaddrs *ifaddr, *ifa;
+
+  if (getifaddrs(&ifaddr) == -1) {
+    perror("getifaddrs");
+    exit(EXIT_FAILURE);
+  }
+
+  /* Walk through linked list, maintaining head pointer so we
+     can free list later */
+
+  for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+    if (ifa->ifa_addr == NULL)
+      continue;
+
+#if defined MOAI_OS_OSX || defined MOAI_OS_IPHONE 
+    struct sockaddr_dl *socketStruct = (struct sockaddr_dl*) ifa->ifa_addr;
+    if (sdl->sdl_family == AF_LINK) {
+      memcpy ( macAddress.bytes, socketStruct->sdl_data + socketStruct->sdl_nlen, 6 );
+      break;  // get the first addr
+    }
+#elif defined MOAI_OS_LINUX || defined MOAI_OS_ANDROID 
+    if (ifa->ifa_addr->sa_family == AF_PACKET) {
+      struct sockaddr_ll *socketStruct = (struct sockaddr_ll*) ifa->ifa_addr;
+      memcpy ( macAddress.bytes, socketStruct->sll_addr, 6 );
+      break;  // get the first addr
+    }
 #endif
-	
-	char address[13];
-	memset ( address , 0 , 13 );
-	
-	sprintf( address, "%02X%02X%02X%02X%02X%02X", macAddress.bytes[0], macAddress.bytes[1], macAddress.bytes[2], macAddress.bytes[3], macAddress.bytes[4], macAddress.bytes[5] );
-	STLString macString = address;
-	return macString;	
+  }
+  freeifaddrs(ifaddr);
+#endif
+
+  char address[13];
+  memset ( address , 0 , 13 );
+
+  sprintf( address, "%02X%02X%02X%02X%02X%02X", macAddress.bytes[0], macAddress.bytes[1], macAddress.bytes[2], macAddress.bytes[3], macAddress.bytes[4], macAddress.bytes[5] );
+  STLString macString = address;
+  return macString;	
 }
 //================================================================//
 // USAdapterInfoList
