@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.5)
 project(moai-dev)
 
+# Platform detection
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  add_definitions(-D__linux__)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+
 # Main version information.
 set(VERSION_STAGE "linux")
 execute_process(COMMAND git rev-parse HEAD OUTPUT_VARIABLE git_hash)
