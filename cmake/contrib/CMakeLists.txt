@@ -12,4 +12,5 @@ set(CMAKE_CURRENT_SOURCE_DIR "${ROOT_DIR}/3rdparty/contrib/")
 
 moai_manual(library
     ${CMAKE_CURRENT_SOURCE_DIR}/utf8.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/whirlpool.c
 )
